@@ -1,15 +1,16 @@
 #!/bin/bash
 
-db_name=
-user=
-pw=
+# DATABASE=blog
+# USER=root
+# PASSWORD=root
+# PORT=3306
 
-mysql -h host.docker.internal -P 3307 -u ${user} -p${pw} ${db_name} -e 'show tables;' > ./list.txt
+mysql -h host.docker.internal -P ${PORT} -u ${USER} -p${PASSWORD} ${DATABASE} -e 'show tables;' > /script/list.txt
 
-sed -i '1d' list.txt
+sed -i '1d' /script/list.txt
 
 while read line
 do
-    mysql -h host.docker.internal -P 3307 -u ${user} -p${pw} ${db_name} -e "desc ${line};" > /tmp/${line}_desc.tsv
-    mysql -h host.docker.internal -P 3307 -u ${user} -p${pw} ${db_name} -e "show index from ${line};" > /tmp/${line}_index.tsv
-done < ./list.txt
+    mysql -h host.docker.internal -P ${PORT} -u ${USER} -p${PASSWORD} ${DATABASE} -e "desc ${line};" > /tmp/${line}_desc.tsv
+    mysql -h host.docker.internal -P ${PORT} -u ${USER} -p${PASSWORD} ${DATABASE} -e "show index from ${line};" > /tmp/${line}_index.tsv
+done < /script/list.txt

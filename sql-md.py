@@ -3,15 +3,16 @@ import glob
 import re
 import os
 
-file_name = 'definition.md'
+current_dir = os.path.dirname(__file__)
+file_name = current_dir + '/definition.md'
 
 def run():
-    files = glob.glob('./tsv/*_desc.tsv')
+    files = glob.glob(current_dir + '/tsv/*_desc.tsv')
     
     for file in files:
-        s = re.search(r"^.*\\(?P<table_name>\w+)_desc\.tsv$", file)
+        s = re.search(r"^.*(\\|/)(?P<table_name>\w+)_desc\.tsv$", file)
         table_name = s.group('table_name')
-
+        
         write_table_name(table_name)
         write_table_definition(table_name)
         write_index_definition(table_name)
@@ -29,19 +30,19 @@ def write_index_definition(table_name):
 
 def write(table_name, md_header, sufix):
 
-    file = './tsv/' + table_name + sufix
+    file = current_dir + '/tsv/' + table_name + sufix
     if os.path.getsize(file) > 0:
         with open(file, 'r', encoding='utf-8') as f:
-                reader = csv.reader(f, delimiter='\t')
-                table_header = next(reader)
-                table_header = '|'.join(table_header)
-                table_header = '|' + table_header + '|h'
+            reader = csv.reader(f, delimiter='\t')
+            table_header = next(reader)
+            table_header = '|'.join(table_header)
+            table_header = '|' + table_header + '|h'
 
-                rows = list()
-                for cols in reader:
-                    row = '|'.join(cols)
-                    row = '|' + row + '|'
-                    rows.append(row)
+            rows = list()
+            for cols in reader:
+                row = '|'.join(cols)
+                row = '|' + row + '|'
+                rows.append(row)
 
         write_definition(md_header, table_header, rows)
 
